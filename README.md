@@ -54,7 +54,7 @@ When accessing the API endpoint via a `GET` request to `http://localhost:3000/bu
 
 These defaults can be changed by use of a query string. In order to access a batch of records, add `http://localhost:3000/businesses?batch=X&page=Y`. X is the number of records you want to return while Y is the page you would like to start on.
 
-Example: `http://localhost:3000/api/businesses?batch=100&page=3` will return 100 records starting at the 300th record.
+Example: `http://localhost:3000/businesses?batch=100&page=3` will return 100 records starting at the 300th record.
 
 There are four key-value pairs returned when accessing this endpoint, which depend on the values submitted in the query string:
 
@@ -117,7 +117,7 @@ curl -i -H "Accept: application/json" -H "Content-type: application/json" -X POS
 To update an existing record, send a PUT request with JSON header information containing only the data you want to update to the appropriate URL:
 
 ```
-curl -i -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d "{\"name\":\"Waterfield and Sons, Incorporated\",\"address\":\"2016 Valley View Ave\",\"address2\":\"\",\"city\":\"La Mirada\",\"state\":\"CA\",\"zip\":\"90604\"}" http://localhost:3000/api/businesses/{:id}
+curl -i -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d "{\"name\":\"Waterfield and Sons, Incorporated\",\"address\":\"2016 Valley View Ave\",\"address2\":\"\",\"city\":\"La Mirada\",\"state\":\"CA\",\"zip\":\"90604\"}" http://localhost:3000/businesses/{:id}
 ```
 
 ### Notes on Updating Records
