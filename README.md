@@ -22,7 +22,7 @@ The application is designed to import data from a .csv file via the browser. In 
 
 The page will refresh once the import process is complete, notifying you once the import is successful:
 
-![Success Colbert!](http://i.giphy.com/zaqclXyLz3Uoo.gif)
+![Success!](http://i.giphy.com/zaqclXyLz3Uoo.gif)
 
 ## Data Restrictions
 
