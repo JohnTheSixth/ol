@@ -36,7 +36,7 @@ The DB schema is set to store all data values (with the exception of `id`, `crea
 4. The app validates the `phone` value to be at least 10 characters in length.
 5. The app validates the `website` value to be at least 7 characters in length (just enough for `http://`).
 6. Any value length that does not meet the minimum requirements specified in 2-5 above will return a `HTTP 422 - unprocessable entity` status.
-6. The only value that can be blank on creation or update is the `address2` value. If the value is blank, it will be saved to the database as `null`. This is the only allowable `null` value in the API.
+7. The only value that can be blank on creation or update is the `address2` value. If the value is blank, it will be saved to the database as `null`. This is the only allowable `null` value in the API.
 
 # Authentication
 
