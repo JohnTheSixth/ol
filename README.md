@@ -24,8 +24,6 @@ The page will refresh once the import process is complete, notifying you once th
 
 ![Success Colbert!](http://i.giphy.com/zaqclXyLz3Uoo.gif)
 
-(Sorry, no glorious Colbert GIFs included in the app.)
-
 ## Data Restrictions
 
 The DB schema is set to store all data values (with the exception of `id`, `created_at`, and `updated_at`) as strings. This is to preserve the integrity of certain values, particularly `zip` and `phone` values, which in some cases may begin with 0. Since the numbers in these fields are not being used to conduct mathematical operations, I decided to forego saving these values as integers.
@@ -57,6 +55,29 @@ When accessing the API endpoint via a `GET` request to `http://localhost:3000/bu
 These defaults can be changed by use of a query string. In order to access a batch of records, add `http://localhost:3000/businesses?batch=X&page=Y`. X is the number of records you want to return while Y is the page you would like to start on.
 
 Example: `http://localhost:3000/api/businesses?batch=100&page=3` will return 100 records starting at the 300th record.
+
+There are four key-value pairs returned when accessing this endpoint, which depend on the values submitted in the query string:
+
+```
+{
+	max_records_per_page: query_string_batch_value
+	page: query_string_page_value
+	total_records_returned: actual_records_returned
+	businesses: [an_array_of_businesses]
+}
+```
+
+`total_records_returned` indicates the actual number of business records returned. In most cases, this will only be different from `max_records_per_page` when it's the last page of available data. For example, if the DB has 147 records and the query string is `businesses?batch=50&page=3`, the result will read as follows:
+
+```
+{
+	max_records_per_page: 50
+	page: 3
+	total_records_returned: 47
+	businesses: [an_array_of_47_businesses]
+}
+```
+The pagination metadata is only returned when accessing the API via the `/businesses` endpoint with a `GET` request.
 
 ### Notes on Retrieving Batches
 
@@ -123,6 +144,11 @@ Testing is done via [rspec](https://github.com/rspec/rspec-rails). All rspec dep
 
 The application only has request tests written, since it is designed as an API with virtually no user-facing capabilities.
 
+The rspec tests have two defaults I manually set:
+
+1. The rspec tests run in the Rails test environment.
+2. When rspec is done running, it drops all records from the Test environment database. To change this, comment out lines 48-50 in `spec_helper.rb`.
+
 Test coverage is included in `spec/requests/businesses_spec.rb`.
 
 ## Adding Test Coverage
@@ -138,7 +164,7 @@ To run the rspec tests, do the following:
 1. Make sure your Rails server is not running (`Ctrl+C`).
 2. Make sure you are in the app's root folder.
 3. Run `rspec spec/requests`.
-4. You should see green – the color of SUCCESS. (Unless, of course, you wrote a test that's failing. But whose fault is that?)
+4. You should see green – the color of SUCCESS. And the Hulk. Smashing! (Unless, of course, you wrote a test that's failing. But whose fault is that?)
 
 ![Smashing!](http://i.giphy.com/aVUWsVgaikS9W.gif)
 

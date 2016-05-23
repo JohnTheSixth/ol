@@ -29,7 +29,7 @@ class BusinessesController < ApplicationController
       if businesses.length == 0
         render status: 404, json: {
           status: 404,
-          error: "No records found."
+          error: 'No records found.'
         }
       else
         render status: 200, json: {
@@ -48,7 +48,7 @@ class BusinessesController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render status: 404, json: {
       status: 404,
-      error: "Record not found"
+      error: 'Record not found'
     }
   end
 
@@ -85,7 +85,7 @@ class BusinessesController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render status: 404, json: {
       status: 404,
-      error: "Record not found"
+      error: 'Record not found'
     }
   end
 
@@ -99,16 +99,16 @@ class BusinessesController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render status: 404, json: {
       status: 404,
-      error: "Record not found"
+      error: 'Record not found'
     }
   end
 
   def import
     if params[:file]
       Business.import(params[:file])
-      redirect_to root_path, notice: ".csv successfully imported."
+      redirect_to root_path, notice: '.csv successfully imported.'
     else
-      redirect_to root_path, notice: "Please choose a .csv file to import."
+      redirect_to root_path, notice: 'Please choose a .csv file to import.'
     end
   end
 

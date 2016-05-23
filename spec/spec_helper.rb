@@ -1,3 +1,4 @@
+ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 
@@ -41,6 +42,11 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+
+  # Drops all records after running tests
+  config.after :all do
+    ActiveRecord::Base.subclasses.each(&:delete_all)
   end
 
 # The settings below are suggested to provide a good initial experience
