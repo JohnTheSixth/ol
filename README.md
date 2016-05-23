@@ -1,5 +1,21 @@
 # Running the App
 
+This app uses Rails 4.2.6. I built the app using Ruby 2.3.0 on my local machine. I'm managing my Ruby environment using [rbenv](https://github.com/rbenv/rbenv). Since I'm on Mac OS 10.11, I've installed rbenv through [Homebrew](http://brew.sh/).
+
+If you need to get started from the ground up, the directions [here](https://gorails.com/setup/osx/10.11-el-capitan) are pretty good. Once you're done make sure you also install [Bundler](http://bundler.io/). But hey, I'm not your boss. You do you. Just make sure you can run Rails.
+
+Presuming you (a) know how to use Git and GitHub and (b) have Rails set up on your system, do the following to run the app:
+
+1. Clone this repository to a directory on your local machine.
+2. Once the repo is cloned, navigate to the root of the repo in Terminal.
+3. Run `bundle install`.
+4. Prepare the database by running `rake db:create`. (The DB used by the app is SQLite, which is the default DB created by every Rails project. So it should run without a problem.)
+5. Migrate the database schema by running `rake db:migrate`.
+6. Run `rails s` in the Terminal.
+7. Profit!
+
+![MONEY MONEY MONEY](http://i.giphy.com/l41Yw2YQ1tekNE6zu.gif)
+
 # Importing Data
 
 The application is designed to import data from a .csv file via the browser. In order to import a .csv, go to the root path `http://localhost:3000`, select your file, and click `Import`. Depending on the size of the CSV you are importing, the process can take several minutes.
@@ -12,7 +28,7 @@ The page will refresh once the import process is complete, notifying you once th
 
 ## Data Restrictions
 
-The DB schema is set to store all data values as strings. This is to preserve the integrity of certain values, particularly `zip` and `phone` values, which in some cases may begin with 0. Since the numbers in these fields are not being used to conduct mathematical operations, I decided to forego saving these values as integers.
+The DB schema is set to store all data values (with the exception of `id`, `created_at`, and `updated_at`) as strings. This is to preserve the integrity of certain values, particularly `zip` and `phone` values, which in some cases may begin with 0. Since the numbers in these fields are not being used to conduct mathematical operations, I decided to forego saving these values as integers.
 
 ### Additional Notes on Data Restrictions
 
@@ -30,7 +46,7 @@ Currently the API does not support authentication, making all records in the DB 
 
 The app also skips verification of the Rails authenticity token, allowing for CRUD operations from external applications.
 
-The authenticity token is NOT overlooked on CSV import. Any CSV import must be done from `http://localhost:3000/businesses/new` (which is also the app's root url).
+The authenticity token is NOT overlooked on CSV import. Any CSV import must be done from `http://localhost:3000` (which routes to `http://localhost:3000/businesses/new`).
 
 # Endpoints
 
@@ -56,7 +72,7 @@ This limit can easily be changed. On line 19 of `businesses_controller.rb`, chan
 
 To retrieve a specific record, send a `GET` request to `http://localhost:3000/businesses/{:id}`, where `{:id}` is the database id of the record you wish to retrieve.
 
-If the record does not exist, the API will return a 500 status with an error message of `Record not found.`
+If the record does not exist, the API will return a 404 status with an error message of `Record not found.`
 
 # Other CRUD Operations
 
@@ -97,18 +113,37 @@ To destroy an existing record, send a DELETE request with JSON header informatio
 curl -i -H "Accept: application/json" -H "Content-type: application/json" -X DELETE http://localhost:3000/businesses/{:id}
 ```
 
-Because you're destroying a record, no validation takes place. It just gets nuked, like so:
+Because you're sending a DELETE request without any data, no validation takes place. It just gets nuked, like so:
 
 ![Nuke that record!](http://media3.giphy.com/media/9YtHBIlvnTqqQ/giphy.gif)
 
 # Testing
 
-Testing is done via rspec. All rspec dependencies should have been installed when you initially installed the application.
+Testing is done via [rspec](https://github.com/rspec/rspec-rails). All rspec dependencies should have been installed when you initially ran `bundle install` (see **Running the App** > Step 3).
 
-All tests are request tests, since the API is configured to 
+The application only has request tests written, since it is designed as an API with virtually no user-facing capabilities.
 
-Test coverage is included in 
+Test coverage is included in `spec/requests/businesses_spec.rb`.
 
-Thanks for reading my documentation! Deadpool loves you for it:
+## Adding Test Coverage
+
+If you want to expand the app's request coverage, simply add your desired test code to the `spec/requests/businesses_spec.rb` file.
+
+If you want to run model, controller, view, or feature specs, you can follow the [rspec documentation](https://github.com/rspec/rspec-rails) to add those tests.
+
+## Running Tests
+
+To run the rspec tests, do the following:
+
+1. Make sure your Rails server is not running (`Ctrl+C`).
+2. Make sure you are in the app's root folder.
+3. Run `rspec spec/requests`.
+4. You should see green – the color of SUCCESS. (Unless, of course, you wrote a test that's failing. But whose fault is that?)
+
+![Smashing!](http://i.giphy.com/aVUWsVgaikS9W.gif)
+
+# Thanks!
+
+Thanks for reading my documentation! I heart you for enduring such a long and arduous journey.
 
 ![Much love from both of us.](http://images-cdn.moviepilot.com/images/c_scale,h_1080,w_1920/t_mp_quality/dxjmqifk5ub8okxkrnhq/james-gunn-explains-why-deadpool-made-so-much-money-844407.jpg)

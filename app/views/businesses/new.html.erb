@@ -1,0 +1,25 @@
+<div class="import-box">
+
+	<% flash.each do |key, value| %>
+	  <% if value.class != Array %>
+	  	<p><b><%= key %></b>: <%= value %></p>
+	  <% else %>
+	    <% value.each do |msg| %>
+	      <p><b><%= key %></b>: <%= msg %></p>
+	    <% end %>
+		<% end %>
+	<% end %>
+
+	<p>Choose a .csv to import below:</p>
+
+	<%= form_tag import_businesses_path, multipart: true do %>
+		<%= file_field_tag :file %>
+		<%= submit_tag "Import", :onclick => 'getElementById("importAction").style.visibility="visible"' %>
+	<% end %>
+
+	<div id="importAction" style="visibility:hidden;">
+		<p>Importing, please wait...</p>
+		<p>While you're waiting, check out what this guy does once he gets to the top. You have to see it to believe it:</p>
+		<p><img src="http://i.imgur.com/9bTn6Kp.gif" alt="Nooo! You're going to miss it!"></p>
+	</div>
+</div>
