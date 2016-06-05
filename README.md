@@ -12,7 +12,7 @@ Presuming you (a) know how to use Git and GitHub and (b) have Rails set up on yo
 4. Prepare the database by running `rake db:create`. (The DB used by the app is SQLite, which is the default DB created by every Rails project. So it should run without a problem.)
 5. Migrate the database schema by running `rake db:migrate`.
 6. Run `rails s` in the Terminal.
-7. Profit!!
+7. Profit!
 
 ![MONEY MONEY MONEY](http://i.giphy.com/l41Yw2YQ1tekNE6zu.gif)
 
