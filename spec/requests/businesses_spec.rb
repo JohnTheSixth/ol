@@ -47,7 +47,7 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 	end
 
 	it 'updates the record' do
-		get '/businesses'
+		get '/businesses', {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
     json_all = JSON.parse(response.body)
     expect(response).to be_success
 
@@ -65,7 +65,7 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 			website: 'http://www.gif-ex.net'
 		}
 
-		put "/businesses/#{business}", data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		put "/businesses/#{business}", data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
 
 		json_one = JSON.parse(response.body)
 		
@@ -82,7 +82,7 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 
     business = json_all['businesses'][0]['id']
 
-    delete "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+    delete "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
 
     json_gone = JSON.parse(response.body)
 
