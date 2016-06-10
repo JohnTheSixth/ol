@@ -11,8 +11,7 @@ require 'json'
 # end
 
 RSpec.describe 'standard CRUD operations', :type => :request do
-	it 'creates a new record' do
-		data = {
+	let(:data){{
 			uuid: SecureRandom.uuid,
 			name: 'Gordian Information Farmers Exchange, LLC.',
 			address: '5392 Main Street',
@@ -23,37 +22,8 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 			country: 'US',
 			phone: '3852710573',
 			website: 'http://www.gif-exchange.net'
-		}
-
-		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token=abcde12345'}
-
-		json = JSON.parse(response.body)
-
-		expect(response).to be_success
-	end
-
-	it 'reads the records' do
-		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcd1234"'}
-    json_all = JSON.parse(response.body)
-    expect(response).to be_success
-
-    business = json_all['businesses'][0]['id']
-
-    get "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token=abcd1234'}
-    json_one = JSON.parse(response.body)
-    expect(response).to be_success
-
-    expect(json_one['name']).to eq('Gordian Information Farmers Exchange, LLC.')
-	end
-
-	it 'updates the record' do
-		get '/businesses', {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
-    json_all = JSON.parse(response.body)
-    expect(response).to be_success
-
-    business = json_all['businesses'][0]['id']
-
-		data = {
+		}}
+ 	let(:data2){{
 			name: 'GIF Exchange, Inc.',
 			address: '3020 Golden Crest Drive',
 			address2: '',
@@ -63,10 +33,75 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 			country: 'US',
 			phone: '3852710573',
 			website: 'http://www.gif-ex.net'
-		}
+  }}
 
-		put "/businesses/#{business}", data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
+  it 'does not create a new record without the token' do
+		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		json = JSON.parse(response.body)
+		expect(response).to have_http_status(401)
+	end
+  it 'does not create a new record with the wrong token' do
+		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+		json = JSON.parse(response.body)
+		expect(response).to have_http_status(401)
+	end
 
+	it 'creates a new record with the correct token' do
+		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
+		json = JSON.parse(response.body)
+		expect(response).to be_success
+	end
+
+	it 'does not read the records without the token' do
+		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		expect(response).to have_http_status(401)
+
+
+    get "/businesses/1", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		expect(response).to have_http_status(401)
+	end
+
+  it 'does not read the records with the wrong token' do
+	  get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+		expect(response).to have_http_status(401)
+
+
+    get "/businesses/1", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+		expect(response).to have_http_status(401)
+	end
+
+	it 'reads the records with the correct token' do
+		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
+    json_all = JSON.parse(response.body)
+    expect(response).to be_success
+
+    business = json_all['businesses'][0]['id']
+
+    get "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
+    json_one = JSON.parse(response.body)
+    expect(response).to be_success
+
+    expect(json_one['name']).to eq('Gordian Information Farmers Exchange, LLC.')
+	end
+
+	it 'does not update the record without the token' do
+    put "/businesses/1", data2.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		expect(response).to have_http_status(401)
+	end
+
+	it 'does not update the record with the wrong token' do
+    put "/businesses/1", data2.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+		expect(response).to have_http_status(401)
+	end
+
+	it 'updates the record with the correct token' do
+		get '/businesses'
+    json_all = JSON.parse(response.body)
+    expect(response).to be_success
+
+    business = json_all['businesses'][0]['id']
+
+		put "/businesses/#{business}", data2.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
 		json_one = JSON.parse(response.body)
 		
 		expect(response).to be_success
@@ -75,25 +110,43 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 		expect(json_one['business']['website']).to eq('http://www.gif-ex.net')
 	end
 
-	it 'destroys the record' do
-		get '/businesses'
+	it 'does not destroy the record without the token' do
+    delete "/businesses/1", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
+		expect(response).to have_http_status(401)
+	end
+
+	it 'does not destroy the record with the wrong token' do
+    delete "/businesses/1", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+		expect(response).to have_http_status(401)
+	end
+
+  it 'destroys the record with the correct token' do
+    get '/businesses'
     json_all = JSON.parse(response.body)
     expect(response).to be_success
 
     business = json_all['businesses'][0]['id']
-
-    delete "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
-
+    delete "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
     json_gone = JSON.parse(response.body)
 
     expect(response).to be_success
     expect(json_gone['message']).to eq("Successfully deleted business id #{business}.")
-	end
+  end
 end
 
 RSpec.describe 'nonexistent api record', :type => :request do
-  it 'gets a nonexistent record' do
+  it 'returns 401 for a nonexistent record without a token' do
     get '/businesses/96524'
+    expect(response).to have_http_status(401) # we don't even know it doesn't exist
+  end
+
+  it 'returns 401 for a nonexistent record with a bad token' do
+    get '/businesses/96524', {'HTTP_AUTHORIZATION' => 'Token token=wrong'}
+    expect(response).to have_http_status(401) # we don't even know it doesn't exist
+  end
+
+  it 'gets a nonexistent record' do
+    get '/businesses/96524', {'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
 
     json = JSON.parse(response.body)
 
