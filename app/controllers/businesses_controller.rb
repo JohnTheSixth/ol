@@ -2,6 +2,7 @@ class BusinessesController < ApplicationController
 
   # Skipping authenticity so the API can be accessed by external applications.
   # Importing a CSV still requires the authenticity token and can only be done in-app.
+  before_filter :restrict_access
   skip_before_filter :verify_authenticity_token, except: [:import]
 
   def index
@@ -116,6 +117,17 @@ private
 
   def business_params
     params.require(:business).permit(:uuid, :name, :address, :address2, :city, :state, :zip, :country, :phone, :website, :created_at)
+  end
+
+  def restrict_access
+    authenticate_or_request_with_http_token do |token, options|
+      if token != 'abcde12345'
+        render status: 401, json: {
+          status: 401,
+          message: 'Unauthorized Access'
+        } and return
+      end
+    end
   end
 
 end

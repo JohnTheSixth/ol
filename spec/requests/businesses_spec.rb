@@ -33,7 +33,7 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 	end
 
 	it 'reads the records' do
-		get '/businesses'
+		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token abcd1234'}
     json_all = JSON.parse(response.body)
     expect(response).to be_success
 
