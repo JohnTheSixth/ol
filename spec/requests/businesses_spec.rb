@@ -25,7 +25,7 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 			website: 'http://www.gif-exchange.net'
 		}
 
-		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
+		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token=abcde12345'}
 
 		json = JSON.parse(response.body)
 
@@ -33,13 +33,13 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 	end
 
 	it 'reads the records' do
-		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
+		get "/businesses", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcd1234"'}
     json_all = JSON.parse(response.body)
     expect(response).to be_success
 
     business = json_all['businesses'][0]['id']
 
-    get "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token="abcde12345"'}
+    get "/businesses/#{business}", {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'AUTHORIZATION' => 'Token token=abcd1234'}
     json_one = JSON.parse(response.body)
     expect(response).to be_success
 
