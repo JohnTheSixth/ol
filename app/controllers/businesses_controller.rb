@@ -120,15 +120,14 @@ private
   end
 
   def restrict_access
-    authenticate_or_request_with_http_token do |token, options|
-      if token != 'abcd1234'
-        return false
-      end
+    if request.headers['HTTP_AUTHORIZATION'] == 'Token token=abcde12345'
+      return true
+    else
+      render status: 401, json: {
+        status: 401,
+        message: 'Unauthorized'
+      }
     end
   end
-
-  # def check_token(token)
-  #   ApiKey.exists?(access_token: token)
-  # end
 
 end

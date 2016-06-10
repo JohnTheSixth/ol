@@ -40,7 +40,6 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 		json = JSON.parse(response.body)
 		expect(response).to have_http_status(401)
 	end
-
   it 'does not create a new record with the wrong token' do
 		post '/businesses', data.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=wrong'}
 		json = JSON.parse(response.body)
@@ -85,7 +84,6 @@ RSpec.describe 'standard CRUD operations', :type => :request do
     expect(json_one['name']).to eq('Gordian Information Farmers Exchange, LLC.')
 	end
 
-
 	it 'does not update the record without the token' do
     put "/businesses/1", data2.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
 		expect(response).to have_http_status(401)
@@ -104,7 +102,6 @@ RSpec.describe 'standard CRUD operations', :type => :request do
     business = json_all['businesses'][0]['id']
 
 		put "/businesses/#{business}", data2.to_json, {'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Token token=abcde12345'}
-
 		json_one = JSON.parse(response.body)
 		
 		expect(response).to be_success
@@ -138,8 +135,13 @@ RSpec.describe 'standard CRUD operations', :type => :request do
 end
 
 RSpec.describe 'nonexistent api record', :type => :request do
-  it 'returns 401 for a nonexistent record' do
+  it 'returns 401 for a nonexistent record without a token' do
     get '/businesses/96524'
+    expect(response).to have_http_status(401) # we don't even know it doesn't exist
+  end
+
+  it 'returns 401 for a nonexistent record with a bad token' do
+    get '/businesses/96524', {'HTTP_AUTHORIZATION' => 'Token token=wrong'}
     expect(response).to have_http_status(401) # we don't even know it doesn't exist
   end
 
