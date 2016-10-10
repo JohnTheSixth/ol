@@ -10,9 +10,12 @@ require 'json'
 #   ActiveRecord::Base.subclasses.each(&:delete_all)
 # end
 
-RSpec.describe 'standard CRUD operations', :type => :request do
+RSpec.describe 'standard CRUD operations', type: :request do
+	# Eventually replace explicit data with general junk data via FactoryGirl:
+	# let(:data){ FactoryGirl.create(:business) }
+	# let(:data){ FactoryGirl.create(:business) }
 	let(:data){{
-			uuid: SecureRandom.uuid,
+			uuid: 		SecureRandom.uuid,
 			name: 'Gordian Information Farmers Exchange, LLC.',
 			address: '5392 Main Street',
 			address2: 'Building 2',

@@ -15,3 +15,6 @@
 
 # Ignore Mac system files
 .DS_Store
+
+# Ignore rbenv files
+.ruby-version
